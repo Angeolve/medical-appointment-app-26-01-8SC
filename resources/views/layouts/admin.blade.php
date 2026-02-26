@@ -20,6 +20,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://kit.fontawesome.com/0c4fea04d1.js" crossorigin="anonymous"></script>
 
+    {{-- wireui --}}
+     <wireui:scripts />
     <!-- Styles -->
     @livewireStyles
 </head>

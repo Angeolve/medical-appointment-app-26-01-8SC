@@ -10,31 +10,14 @@
     ],
 
     [
-      'header' => 'Administración',
+      'header' => 'Gestión',
     ],
 
     [
-      'name' => 'Tienda en Linea',
-      'icon' => 'fa-solid fa-user-group',
-      'href' => route('admin.dashboard'),
-      'active' => request()->routeIs('admin.dashboard'),
-      'submenu' => [
-        [
-          'name' => 'Productos',
-          'href' => '#',
-          'active' => false,
-        ],
-        [
-          'name' => 'Categorias',
-          'href' => '#',
-          'active' => false,
-        ],
-        [
-          'name' => 'Pedidoss',
-          'href' => '#',
-          'active' => false,
-        ],
-      ],
+      'name' => 'Roles y permisos',
+      'icon' => 'fa-solid fa-shield-halved',
+      'href' => route('admin.roles.index'),
+      'active' => request()->routeIs('admin.roles.*'),
     ],
   ]; 
 

@@ -18,7 +18,13 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Font Awesome Css --}}
     <script src="https://kit.fontawesome.com/0c4fea04d1.js" crossorigin="anonymous"></script>
+
+    {{-- Swee Alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     {{-- wireui --}}
      <wireui:scripts />
@@ -35,10 +41,15 @@
     
 
     <div class="p-4 sm:ml-64 mt-14">
-        <div class="mt-14">
-            <div class="mt-14 flex items-center justify-between">
+        <div class="mt-14 flex items-center justify-between w-full">
+             
             @include('layouts.includes.admin.breadcrumb')
-            </div>
+            @isset($action)
+               <div>
+                {{ $action }}
+               </div>
+            @endisset
+        
         </div>
         {{ $slot }}
     </div>
@@ -46,12 +57,18 @@
 
     @stack('modals')
 
+    {{-- Mostrar Sweet Alert --}}
+
+    @if (session('swal'))
+        <script>
+            Swal.fire(@json(session('swal')));
+            
+        </script>
+    @endif
+
     @livewireScripts
-
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
+    
 
 
 </body>

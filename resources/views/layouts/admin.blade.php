@@ -61,7 +61,7 @@
 
     @if (session('swal'))
         <script>
-            Swal.fire(@json(session('swal')));
+            Swal.fire(@json(session('swal'))); 
             
         </script>
     @endif

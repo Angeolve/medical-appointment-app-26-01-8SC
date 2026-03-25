@@ -26,6 +26,12 @@
       'href' => route('admin.users.index'),
       'active' => request()->routeIs('admin.users.*'),
     ],
+    [ //agregamos usuarios
+      'name' => 'Pcientes',
+      'icon' => 'fa-solid fa-user-injured',
+      'href' => route('admin.patients.index'),
+      'active' => request()->routeIs('admin.patients.*'),
+    ],
   ]; 
 
 

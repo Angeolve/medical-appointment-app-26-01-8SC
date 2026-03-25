@@ -29,6 +29,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
+
         return view('admin.users.create', compact('roles'));
     }
 
@@ -56,7 +57,14 @@ class UserController extends Controller
             'title' => 'Usuario creado correctamente',
             'text' => 'El usuario ha sido crrado correctamente'
         ]);
-        return redirect(route('admin.users.index'))->with('success', 'User created successfully');
+
+        //Si el usuario creado es un paciente, envía el módulo pacientes
+        if ($user::role('Paciente')) {
+            //Creamos el registro para un paciente
+            $patient = $user->patient()->create();
+            return redirect()->route('admin.patients.edit', $patient);
+        }
+        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
     }
 
     /**
@@ -126,7 +134,7 @@ class UserController extends Controller
             abort(403, 'No puedes eliminarte a ti mismo');
 
 
-            return redirect()->route('admin.users.index');
+            return redirect(route('admin.users.index'));
         }
 
 

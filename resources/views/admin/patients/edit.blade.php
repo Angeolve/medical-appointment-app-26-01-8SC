@@ -1,3 +1,28 @@
+{{-- -Logica de PHP para manejar errores y controlar la pestaña activa--}}
+
+{{-- Lógica para manejar errores y controlar la pestaña activa --}}
+@php
+$errorGroups = [
+  'antecedentes'=> ['Allergies', 'chronic_conditions', 'surgical_history', 'family_history'],
+  'informacion-general' => ['blood_type_id', 'observations'],
+  'contacto-emergencia' => [
+    'emergency_contact_name',
+    'emergency_contact_phone',
+    'emergency_contact_relationship',
+  ]
+];
+
+// Pestaña por defecto
+$initialTab = 'datos-personales';
+
+// Detectar si hay errores y cambiar de pestaña automáticamente
+foreach($errorGroups as $tabName => $fields){
+  if($errors->hasAny($fields)){
+    $initialTab = $tabName;
+    break;
+  }
+}
+@endphp
 <x-admin-layout title="Pacientes" :breadcrumbs="[
   [
     'name' => 'Dashboard',
@@ -44,11 +69,11 @@
 
   {{-- Tabs --}}
   <x-wire-card>
-    <div x-data="{ tab: 'datos-personales' }">
+    <div x-data="{ tab: '{{ $initialTab}}' }">
 
-      {{-- Menú --}}
+      {{-- Menú 
       <div class="border-b border-gray-200">
-        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">
+        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">--}}
 
           <li class="me-2">
             <a href="#" x-on:click="tab = 'datos-personales'"
@@ -62,47 +87,77 @@
             </a>
           </li>
 
+          @php
+          $hasError = $errors->hasAny($errorGroups['antecedentes']);
+          @endphp 
+         
           <li class="me-2">
             <a href="#" x-on:click="tab = 'antecedentes'"
                :class="{
-                 'text-blue-600 border-blue-600 active': tab == 'antecedentes',
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'antecedentes'
+                'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'antecedentes',
+                 'text-blue-600 border-blue-600 active': tab == 'antecedentes' && !{{$hasError ? 'true' : 'false'}},
+                 'text-red-600 border-red-600 active': tab == 'antecedentes' && {{$hasError ? 'true' : 'false'}},
+                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'antecedentes' && !{{$hasError ? 'true' : 'false'}}, 
                }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group">
+               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
+                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}"
+               :aria-current="tab == 'antecedentes' ? 'page' : undefined">
               <i class="fa-solid fa-file-lines me-2"></i>
               Antecedentes
+              @if ($hasError)
+                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
+              @endif
             </a>
-          </li>
+                
+          
 
+          @php
+          $hasError = $errors->hasAny($errorGroups['informacion-general']);
+          @endphp 
           <li class="me-2">
             <a href="#" x-on:click="tab = 'informacion-general'"
                :class="{
-                 'text-blue-600 border-blue-600 active': tab == 'informacion-general',
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'informacion-general'
+                 'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'informacion-general',
+                 'text-blue-600 border-blue-600 active': tab == 'informacion-general' && !{{$hasError ? 'true' : 'false'}},
+                 'text-red-600 border-red-600 active': tab == 'informacion-general' && {{$hasError ? 'true' : 'false'}},
+                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'informacion-general' && !{{$hasError ? 'true' : 'false'}},
                }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group">
+               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
+                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}">
               <i class="fa-solid fa-info me-2"></i>
               Información general
+              @if ($hasError)
+                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
+              @endif
             </a>
           </li>
 
+          @php
+          $hasError = $errors->hasAny($errorGroups['contacto-emergencia']);
+          @endphp 
           <li class="me-2">
             <a href="#" x-on:click="tab = 'contacto-emergencia'"
                :class="{
-                 'text-blue-600 border-blue-600 active': tab == 'contacto-emergencia',
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'contacto-emergencia'
+                 'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'contacto-emergencia',
+                 'text-blue-600 border-blue-600 active': tab == 'contacto-emergencia' && !{{$hasError ? 'true' : 'false'}},
+                 'text-red-600 border-red-600 active': tab == 'contacto-emergencia' && {{$hasError ? 'true' : 'false'}},
+                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'contacto-emergencia' && !{{$hasError ? 'true' : 'false'}},
                }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group">
+               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
+                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}">
               <i class="fa-solid fa-heart me-2"></i>
               Contacto de emergencia
+              @if ($hasError)
+                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
+              @endif
             </a>
           </li>
 
-        </ul>
-      </div>
+       {{-- </ul>
+      </div> --}}
 
       {{-- CONTENIDO --}}
-      <div class="px-4 mt-4">
+      
 
         {{-- TAB: Datos personales --}}
         <div x-show="tab === 'datos-personales'" style="display: none;">
@@ -157,9 +212,12 @@
         {{-- TAB: Antecedentes --}}
         <div x-show="tab === 'antecedentes'" style="display: none;">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <x-wire-textarea label="Alergias conocidas" name="allergies">
-              {{ old('allergies', $patient->allergies) }}
+             
+           
+            <x-wire-textarea 
+                label="Alergias conocidas" 
+                name="Allergies">
+                {{ old('Allergies', $patient->Allergies) }}
             </x-wire-textarea>
 
             <x-wire-textarea label="Enfermedades crónicas" name="chronic_conditions">
@@ -181,14 +239,15 @@
         <div x-show="tab === 'informacion-general'" style="display: none;">
           <div class="grid lg:grid-cols gap-4">
 
-            <x-wire-native-select label="Tipo de Sangre" class="mb-4" name="blood_type">
+           <x-wire-native-select label="Tipo de Sangre" class="mb-4" name="blood_type_id">
               <option value="">Selecciona tipo de sangre</option>
               @foreach ($bloodTypes as $bloodType)
-                <option value="{{ $bloodType->id }}" @selected(old('blood_type', $patient->blood_type_id) == $bloodType->id)>
-                  {{ $bloodType->name }}
-                </option>
+                  <option value="{{ $bloodType->id }}" 
+                      @selected(old('blood_type_id', $patient->blood_type_id) == $bloodType->id)>
+                      {{ $bloodType->name }}
+                  </option>
               @endforeach
-            </x-wire-native-select>
+          </x-wire-native-select>
 
             <x-wire-textarea label="Observaciones" name="observations">
               {{ old('observations', $patient->observations) }}
@@ -224,7 +283,7 @@
           </div>
         </div>
 
-      </div> 
+   
 
     </div>
   </x-wire-card>

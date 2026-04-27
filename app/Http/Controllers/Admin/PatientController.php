@@ -57,7 +57,7 @@ class PatientController extends Controller
     {
         $data = $request->validate([
             'blood_type_id' => 'nullable|exists:blood_types,id',
-            'allergies' => 'nullable|string|min:3|max:255',
+            'Allergies' => 'nullable|string|min:3|max:255',
             'chronic_conditions' => 'nullable|string|min:3|max:255',
             'surgical_history' => 'nullable|string|min:3|max:255',
             'family_history' => 'nullable|string|min:3|max:255',

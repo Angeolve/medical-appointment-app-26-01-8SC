@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Patient extends Model
 {
     protected $fillable = [
-        'allergies',
+        'user_id',         // Agrégalo si vas a crear pacientes
+        'blood_type_id',   // ¡Importante para que guarde el tipo de sangre!
+        'Allergies',
         'chronic_conditions',
         'surgical_history',
         'family_history',
@@ -16,7 +18,6 @@ class Patient extends Model
         'emergency_contact_phone',
         'emergency_contact_relationship',
     ];
-
 
 
     //Relacion uno a uno inversa

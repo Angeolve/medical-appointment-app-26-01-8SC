@@ -285,7 +285,7 @@ return [
         'work' => 'trabajo',
         'year' => 'año',
         //Personalizados
-        'allergies' => 'alergias',
+        'Allergies' => 'alergias',
         'chronic_conditions' => 'enfermedades crónicas',
         'surgical_history' => 'antecedente quirúrgico',
         'family_history' => 'antecedentes familiares',

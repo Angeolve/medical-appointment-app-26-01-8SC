@@ -23,6 +23,7 @@ foreach($errorGroups as $tabName => $fields){
   }
 }
 @endphp
+
 <x-admin-layout title="Pacientes" :breadcrumbs="[
   [
     'name' => 'Dashboard',
@@ -54,7 +55,7 @@ foreach($errorGroups as $tabName => $fields){
         </div>
       </div>
 
-      <div class="flex space-x-3 ml-auto">
+      <div class="flex gap-4 ml-auto">
         <x-wire-button outline gray href="{{ route('admin.patients.index') }}">
           Volver
         </x-wire-button>
@@ -69,223 +70,131 @@ foreach($errorGroups as $tabName => $fields){
 
   {{-- Tabs --}}
   <x-wire-card>
-    <div x-data="{ tab: '{{ $initialTab}}' }">
+    {{-- Refactorización usando el componente x-tabs --}}
+    <x-tabs :active="$initialTab">
 
-      {{-- Menú 
-      <div class="border-b border-gray-200">
-        <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-gray-500">--}}
+      {{-- Menú --}}
+      <x-slot name="header">
+        <x-tabs-link tab="datos-personales">
+          <i class="fa-solid fa-user me-2"></i>
+          Datos personales
+        </x-tabs-link>
 
-          <li class="me-2">
-            <a href="#" x-on:click="tab = 'datos-personales'"
-               :class="{
-                 'text-blue-600 border-blue-600 active': tab == 'datos-personales',
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'datos-personales'
-               }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group">
-              <i class="fa-solid fa-user me-2"></i>
-              Datos personales
-            </a>
-          </li>
+        <x-tabs-link tab="antecedentes" :error="$errors->hasAny($errorGroups['antecedentes'])">
+          <i class="fa-solid fa-file-lines me-2"></i>
+          Antecedentes
+        </x-tabs-link>
 
-          @php
-          $hasError = $errors->hasAny($errorGroups['antecedentes']);
-          @endphp 
-         
-          <li class="me-2">
-            <a href="#" x-on:click="tab = 'antecedentes'"
-               :class="{
-                'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'antecedentes',
-                 'text-blue-600 border-blue-600 active': tab == 'antecedentes' && !{{$hasError ? 'true' : 'false'}},
-                 'text-red-600 border-red-600 active': tab == 'antecedentes' && {{$hasError ? 'true' : 'false'}},
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'antecedentes' && !{{$hasError ? 'true' : 'false'}}, 
-               }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
-                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}"
-               :aria-current="tab == 'antecedentes' ? 'page' : undefined">
-              <i class="fa-solid fa-file-lines me-2"></i>
-              Antecedentes
-              @if ($hasError)
-                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
-              @endif
-            </a>
-                
-          
+        <x-tabs-link tab="informacion-general" :error="$errors->hasAny($errorGroups['informacion-general'])">
+          <i class="fa-solid fa-info me-2"></i>
+          Información general
+        </x-tabs-link>
 
-          @php
-          $hasError = $errors->hasAny($errorGroups['informacion-general']);
-          @endphp 
-          <li class="me-2">
-            <a href="#" x-on:click="tab = 'informacion-general'"
-               :class="{
-                 'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'informacion-general',
-                 'text-blue-600 border-blue-600 active': tab == 'informacion-general' && !{{$hasError ? 'true' : 'false'}},
-                 'text-red-600 border-red-600 active': tab == 'informacion-general' && {{$hasError ? 'true' : 'false'}},
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'informacion-general' && !{{$hasError ? 'true' : 'false'}},
-               }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
-                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}">
-              <i class="fa-solid fa-info me-2"></i>
-              Información general
-              @if ($hasError)
-                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
-              @endif
-            </a>
-          </li>
-
-          @php
-          $hasError = $errors->hasAny($errorGroups['contacto-emergencia']);
-          @endphp 
-          <li class="me-2">
-            <a href="#" x-on:click="tab = 'contacto-emergencia'"
-               :class="{
-                 'text-red-600 border-red-600': {{$hasError ? 'true' : 'false'}} && tab !== 'contacto-emergencia',
-                 'text-blue-600 border-blue-600 active': tab == 'contacto-emergencia' && !{{$hasError ? 'true' : 'false'}},
-                 'text-red-600 border-red-600 active': tab == 'contacto-emergencia' && {{$hasError ? 'true' : 'false'}},
-                 'border-transparent hover:text-blue-600 hover:border-gray-300': tab !== 'contacto-emergencia' && !{{$hasError ? 'true' : 'false'}},
-               }"
-               class="inline-flex items-center justify-center p-4 border-b-2 rounded-t-lg group transition-colors duration-200
-                {{  $hasError ? 'hover:text-red-600 border-red-600': '' }}">
-              <i class="fa-solid fa-heart me-2"></i>
-              Contacto de emergencia
-              @if ($hasError)
-                <i class ="fa-solid fa-circle-exclamation ms-2 animate-pulse"></i>
-              @endif
-            </a>
-          </li>
-
-       {{-- </ul>
-      </div> --}}
+        <x-tabs-link tab="contacto-emergencia" :error="$errors->hasAny($errorGroups['contacto-emergencia'])">
+          <i class="fa-solid fa-heart me-2"></i>
+          Contacto de emergencia
+        </x-tabs-link>
+      </x-slot>
 
       {{-- CONTENIDO --}}
-      
 
-        {{-- TAB: Datos personales --}}
-        <div x-show="tab === 'datos-personales'" style="display: none;">
-
-  <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg shadow-sm">
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-      <div class="flex items-start">
-        <i class="fa-solid fa-user-gear text-blue-500 text-xl mt-1"></i>
-
-        <div class="ml-3">
-          <h3 class="text-sm font-bold text-blue-800">
-            Edición cuenta de usuario
-          </h3>
-
-          <p class="text-sm text-blue-600">
-            La <strong>información de acceso</strong> (Nombre, Email y contraseña) debe gestionarse desde la cuenta de usuario asociada.
-          </p>
-        </div>
-      </div>
-
-      <x-wire-button primary sm
-        href="{{ route('admin.users.edit', $patient->user) }}"
-        target="_blank">
-
-        Editar usuario
-        <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
-      </x-wire-button>
-
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div>
-      <span class="text-gray-500 font-semibold">Teléfono: </span>
-      <span class="text-gray-500 text-sm ml-1">{{ $patient->user->phone }}</span>
-    </div>
-
-    <div>
-      <span class="text-gray-500 font-semibold">Email: </span>
-      <span class="text-gray-500 text-sm ml-1">{{ $patient->user->email }}</span>
-    </div>
-
-    <div>
-      <span class="text-gray-500 font-semibold">Dirección: </span>
-      <span class="text-gray-500 text-sm ml-1">{{ $patient->user->address }}</span>
-    </div>
-  </div>
-
-</div>
-
-        {{-- TAB: Antecedentes --}}
-        <div x-show="tab === 'antecedentes'" style="display: none;">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-             
-           
-            <x-wire-textarea 
-                label="Alergias conocidas" 
-                name="Allergies">
-                {{ old('Allergies', $patient->Allergies) }}
-            </x-wire-textarea>
-
-            <x-wire-textarea label="Enfermedades crónicas" name="chronic_conditions">
-              {{ old('chronic_conditions', $patient->chronic_conditions) }}
-            </x-wire-textarea>
-
-            <x-wire-textarea label="Antecedentes quirúrgicos" name="surgical_history">
-              {{ old('surgical_history', $patient->surgical_history) }}
-            </x-wire-textarea>
-
-            <x-wire-textarea label="Antecedentes familiares" name="family_history">
-              {{ old('family_history', $patient->family_history) }}
-            </x-wire-textarea>
-
+      {{-- TAB: Datos personales --}}
+      <x-tab-content tab="datos-personales">
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded-r-lg shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-start">
+              <i class="fa-solid fa-user-gear text-blue-500 text-xl mt-1"></i>
+              <div class="ml-3">
+                <h3 class="text-sm font-bold text-blue-800">
+                  Edición cuenta de usuario
+                </h3>
+                <p class="text-sm text-blue-600">
+                  La <strong>información de acceso</strong> (Nombre, Email y contraseña) debe gestionarse desde la cuenta de usuario asociada.
+                </p>
+              </div>
+            </div>
+            <x-wire-button primary sm href="{{ route('admin.users.edit', $patient->user) }}" target="_blank">
+              Editar usuario
+              <i class="fa-solid fa-arrow-up-right-from-square ms-2"></i>
+            </x-wire-button>
           </div>
         </div>
 
-        {{-- TAB: Información general --}}
-        <div x-show="tab === 'informacion-general'" style="display: none;">
-          <div class="grid lg:grid-cols gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <span class="text-gray-500 font-semibold">Teléfono: </span>
+            <span class="text-gray-500 text-sm ml-1">{{ $patient->user->phone }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500 font-semibold">Email: </span>
+            <span class="text-gray-500 text-sm ml-1">{{ $patient->user->email }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500 font-semibold">Dirección: </span>
+            <span class="text-gray-500 text-sm ml-1">{{ $patient->user->address }}</span>
+          </div>
+        </div>
+      </x-tab-content>
 
-           <x-wire-native-select label="Tipo de Sangre" class="mb-4" name="blood_type_id">
-              <option value="">Selecciona tipo de sangre</option>
-              @foreach ($bloodTypes as $bloodType)
-                  <option value="{{ $bloodType->id }}" 
-                      @selected(old('blood_type_id', $patient->blood_type_id) == $bloodType->id)>
-                      {{ $bloodType->name }}
-                  </option>
-              @endforeach
+      {{-- TAB: Antecedentes --}}
+      <x-tab-content tab="antecedentes">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <x-wire-textarea label="Alergias conocidas" name="Allergies">
+            {{ old('Allergies', $patient->Allergies) }}
+          </x-wire-textarea>
+
+          <x-wire-textarea label="Enfermedades crónicas" name="chronic_conditions">
+            {{ old('chronic_conditions', $patient->chronic_conditions) }}
+          </x-wire-textarea>
+
+          <x-wire-textarea label="Antecedentes quirúrgicos" name="surgical_history">
+            {{ old('surgical_history', $patient->surgical_history) }}
+          </x-wire-textarea>
+
+          <x-wire-textarea label="Antecedentes familiares" name="family_history">
+            {{ old('family_history', $patient->family_history) }}
+          </x-wire-textarea>
+        </div>
+      </x-tab-content>
+
+      {{-- TAB: Información general --}}
+      <x-tab-content tab="informacion-general">
+        <div class="grid lg:grid-cols gap-4">
+          <x-wire-native-select label="Tipo de Sangre" class="mb-4" name="blood_type_id">
+            <option value="">Selecciona tipo de sangre</option>
+            @foreach ($bloodTypes as $bloodType)
+              <option value="{{ $bloodType->id }}" @selected(old('blood_type_id', $patient->blood_type_id) == $bloodType->id)>
+                {{ $bloodType->name }}
+              </option>
+            @endforeach
           </x-wire-native-select>
 
-            <x-wire-textarea label="Observaciones" name="observations">
-              {{ old('observations', $patient->observations) }}
-            </x-wire-textarea>
-
-          </div>
+          <x-wire-textarea label="Observaciones" name="observations">
+            {{ old('observations', $patient->observations) }}
+          </x-wire-textarea>
         </div>
+      </x-tab-content>
 
-        {{-- TAB: Contacto de emergencia --}}
-        <div x-show="tab === 'contacto-emergencia'" style="display: none;">
-          <div class="space-y-4">
+      {{-- TAB: Contacto de emergencia --}}
+      <x-tab-content tab="contacto-emergencia">
+        <div class="space-y-4">
+          <x-wire-input label="Nombre de contacto de emergencia" name="emergency_contact_name" 
+            value="{{ old('emergency_contact_name', $patient->emergency_contact_name) }}">
+          </x-wire-input>
 
-            <x-wire-input 
-              label="Nombre de contacto de emergencia" 
-              name="emergency_contact_name" 
-              value="{{ old('emergency_contact_name', $patient->emergency_contact_name) }}">
-            </x-wire-input>
+          <x-wire-phone label="Teléfono de contacto de emergencia" name="emergency_contact_phone"
+            mask="(###) ###-####" placeholder="(123) 456-7890"
+            value="{{ old('emergency_contact_phone', $patient->emergency_contact_phone) }}">
+          </x-wire-phone>
 
-           <x-wire-phone 
-              label="Teléfono de contacto de emergencia" 
-              name="emergency_contact_phone"
-              mask="(###) ###-####"
-              placeholder="(123) 456-7890"
-              value="{{ old('emergency_contact_phone', $patient->emergency_contact_phone) }}">
-            </x-wire-phone>
-
-            <x-wire-input 
-              label="Relación con contacto de emergencia" 
-              name="emergency_contact_relationship"  placeholder="Familiar, Amigo , etc."
-              value="{{ old('emergency_contact_relationship', $patient->emergency_contact_relationship) }}">
-            </x-wire-input>
-
-          </div>
+          <x-wire-input label="Relación con contacto de emergencia" name="emergency_contact_relationship" 
+            placeholder="Familiar, Amigo , etc."
+            value="{{ old('emergency_contact_relationship', $patient->emergency_contact_relationship) }}">
+          </x-wire-input>
         </div>
+      </x-tab-content>
 
-   
-
-    </div>
+    </x-tabs>
   </x-wire-card>
 
 </form>
